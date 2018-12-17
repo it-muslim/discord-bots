@@ -1,0 +1,11 @@
+{
+    "name": "thanks-bot",
+    "version": "1.0.0",
+    "description": "Discord bot written in Node.js that counts thanks to users of IT-Muslim Community server.",
+    "main": "bot.js",
+    "author": "IT-Muslim Community",
+    "dependencies": {
+        "discord.io": "^2.5.3",
+        "winston": "^3.1.0"
+    }
+}

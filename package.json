@@ -1,9 +1,9 @@
 {
-    "name": "greeter-bot",
+    "name": "thanks-bot",
     "version": "1.0.0",
-    "description": "My own Discord bot",
+    "description": "Thanks bot for IT-Muslim Community",
     "main": "bot.js",
-    "author": "YOUR-NAME-HERE",
+    "author": "IT-Muslim Community",
     "dependencies": {
         "discord.io": "^2.5.3",
         "winston": "^3.1.0"

@@ -24,7 +24,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     if (regexp.test(message) && channelID == 525249065039036426 && user !== String) {
          bot.sendMessage({to: channelID, message:  user + " Nobody was mentioned in your message (Aliya's bot)"});
     }
-    else {
+    else if(regexp.test(message) && channelID == 525249065039036426 && user == String){
         bot.sendMessage({to: channelID, message:  user + " thanked in message (Aliya's bot)"});
     }
 });

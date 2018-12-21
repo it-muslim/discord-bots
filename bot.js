@@ -21,7 +21,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
     var regexp = /\!thanks/gmi;
 
-    if(regexp.test(message) && channelID == 441120673109245982) {
+    if(regexp.test(message) && channelID == 525249065039036426) {
 
         bot.sendMessage({to: channelID, message: "Woohoo,  " + user + " thanked someone! p.s. Aliya's bot"});
     }

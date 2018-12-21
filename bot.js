@@ -19,10 +19,12 @@ bot.on('ready',  function(evt) {
 bot.on('message', function (user, userID, channelID, message, evt) {
     console.log(message);
 
-    var regexp = /\!thanks/gmi;
+    var regexp = /\!thanks\b/gmi;
 
-    if(regexp.test(message) && channelID == 525249065039036426) {
-
-        bot.sendMessage({to: channelID, message: "Woohoo,  " + user + " thanked someone! p.s. Aliya's bot"});
+    if (regexp.test(message) && channelID == 525249065039036426 && user !== String) {
+         bot.sendMessage({to: channelID, message:  user + " Nobody was mentioned in your message (Aliya's bot)"});
+    }
+    else {
+        bot.sendMessage({to: channelID, message:  user + " thanked in message (Aliya's bot)"});
     }
 });

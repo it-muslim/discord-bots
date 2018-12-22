@@ -1,11 +1,11 @@
 {
     "name": "thanks-bot",
     "version": "1.0.0",
-    "description": "Discord bot written in Node.js that counts thanks to users of IT-Muslim Community server.",
+    "description": "Thanks bot for IT-Muslim Community",
     "main": "bot.js",
     "author": "IT-Muslim Community",
     "dependencies": {
-        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
-        "winston": "^2.4.4"
+        "discord.io": "github:woor/discord.io#gateway_v6",
+        "winston": "^2.3.1"
     }
 }

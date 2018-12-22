@@ -42,6 +42,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         if (regexp.test(message)) {
 
             bot.sendMessage({to: channelID, message:  user + " thanked in message (Aliya's bot)"});
+
         }
+
     }
 });

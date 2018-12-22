@@ -1,7 +1,5 @@
 # folder and files
 
 node_modules/
-auth.json
 package-lock.json
 README.md
-.gitignore

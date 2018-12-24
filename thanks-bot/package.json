@@ -1,0 +1,11 @@
+{
+    "name": "thanks-bot",
+    "version": "1.0.0",
+    "description": "Thanks bot for IT-Muslim Community",
+    "main": "bot.js",
+    "author": "IT-Muslim",
+    "dependencies": {
+        "discord.io": "github:woor/discord.io#gateway_v6",
+        "winston": "^2.3.1"
+    }
+}

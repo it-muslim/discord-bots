@@ -5,45 +5,37 @@ var auth = require('./auth.json');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
-    colorize: true
+	colorize: true
 });
 
 logger.level = 'debug';
 
 // Initialize Discord Bot
 var bot = new Discord.Client({
-    token: auth.token,
-    autorun: true,
+	token: auth.token,
+	autorun: true,
 });
 
 bot.on('ready', function (evt) {
-    logger.info('Connected');
-    logger.info('Logged in as: ');
-
-    logger.info(bot.username + ' - (' + bot.id + ')');
+	logger.info('Connected');
+	logger.info('Logged in as: ');
+	logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
+	let regexp = /\!thanks/gmi;
+	let arrUsernames = [];
+	evt.d.mentions.forEach(function(item, i) {
+		arrUsernames.push(item.username);
+		return arrUsernames;  
+	})
 
-    console.log(evt.d.mentions);
-/*console.log(evt);*/
-let regexp = /\!thanks/gmi;
-let bot = [];
-evt.d.mentions.forEach(function(item, i, mentions) {
-    bot.push(item.username);
-     return bot;  
-  })
+	if (regexp.test(message)) {
+		bot.sendMessage({
+			to: channelID,
+			message: evt.d.author.username+ " поблагодарил(a) кого-то вроде (Safiya's bot)" +arrUsernames
+		});
+	}
 
-/*var message = evt.d.author.username+ " поблагодарил(a) кого-то вроде (Safiya's bot)" +bot;*/
-
-if (regexp.test(message)) {
-    bot.sendMessage({
-        to: channelID,
-        message: mentions.forEach(function(item, i, mentions) {
-           evt.d.author.username+ " поблагодарил(a) кого-то вроде (Safiya's bot)" +bot;
-           /*Скажите, что я пытаюсь вообще сделать??Я всего лишь хочу перебрать username в цикле и отображать в message*/
-       })
-    });
-}
 });
 

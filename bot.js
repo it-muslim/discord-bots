@@ -23,18 +23,33 @@ bot.on('ready', function (evt) {
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
+
   let regexp = /\!thanks/gmi;
   let arrMentionedUsers = [];
+  let err = '';
   evt.d.mentions.forEach(function(item) {
-    arrMentionedUsers.push(item.username);
-    return arrMentionedUsers;  
+    if(evt.d.author.username === item.username){
+        err += item.username;
+    }else{
+        arrMentionedUsers.push(item.username);
+        return arrMentionedUsers;
+    }
 })
 
-  if (regexp.test(message)) {
+  if(channelID !== '525249065039036426'){
+    return;
+}
+
+if (regexp.test(message) && evt.d.author.username !== err) {
     bot.sendMessage({
       to: channelID,
-      message: evt.d.author.username+ " поблагодарил(a) пользователя(ей) "
-      +arrMentionedUsers.join(', ') +" (Safiya's bot)"
+      message: evt.d.author.username + " поблагодарил(a) пользователя(ей) "
+      + arrMentionedUsers.join(', ') + " (Safiya's bot)"
+  });
+}else if(regexp.test(message) && evt.d.author.username == err){
+   bot.sendMessage({
+      to: channelID,
+      message: " oops "
   });
 }
 });

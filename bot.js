@@ -49,7 +49,7 @@ if (regexp.test(message) && evt.d.author.username !== err) {
 }else if(regexp.test(message) && evt.d.author.username == err){
    bot.sendMessage({
       to: channelID,
-      message: " oops "
+      message: "oops"
   });
 }
 });

@@ -23,28 +23,20 @@ bot.on('ready',  function(evt) {
 
 bot.on('message', function (user, userID, channelID, message, evt) {
 
-
-
     var regexp = /\!thanks\b/gmi;
 
     var num_Channel = "525249065039036426";
-
-
-
 
     if(channelID == num_Channel) {
 
         if (regexp.test(message)) {
 
-            for(var i = 0; i >= evt.d.mentions; i++)  {
-
-                console.log('попытка 1 ' + evt.d.mentions[i]);
+            evt.d.mentions.forEach(function(item, i, mentions) {
 
                 bot.sendMessage({to: channelID, message:  user + " thanked in message " + evt.d.mentions[i].username + " (Aliya's bot)"});
 
-            }
-
+            });
         }
-
     }
+
 });

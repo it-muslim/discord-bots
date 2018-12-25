@@ -33,7 +33,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
             evt.d.mentions.forEach(function(item, i, mentions) {
 
-                bot.sendMessage({to: channelID, message:  user + " thanked in message " + evt.d.mentions[i].username + " (Aliya's bot)"});
+                bot.sendMessage({to: channelID, message: user + " thanked in message " + evt.d.mentions[i].username + " (Aliya's bot)"})
 
             });
         }

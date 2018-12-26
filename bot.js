@@ -21,35 +21,36 @@ bot.on('ready', function (evt) {
   logger.info('Logged in as: ');
   logger.info(bot.username + ' - (' + bot.id + ')');
 });
-
+/**/
 bot.on('message', function (user, userID, channelID, message, evt) {
-
-  let regexp = /\!thanks/gmi;
-  let arrMentionedUsers = [];
-  let err = '';
-  evt.d.mentions.forEach(function(item) {
-    if(evt.d.author.username === item.username){
-        err += item.username;
-    }else{
-        arrMentionedUsers.push(item.username);
-        return arrMentionedUsers;
-    }
-})
-
-  if(channelID !== '525249065039036426'){
-    return;
+    let regexp = /\!thanks/gmi;
+    if(channelID !== '525249065039036426' ||
+     evt.d.author.id === '523928478341660702' || !(regexp.test(message)) ){
+        return;
 }
+let mentionedUserId = [];
+let mentionedUserNames = [];
 
-if (regexp.test(message) && evt.d.author.username !== err) {
+evt.d.mentions.map(function(item){
+    mentionedUserId.push(item.id);
+});
+
+evt.d.mentions.map(function(item){
+    mentionedUserNames.push(item.username);
+});
+
+if (mentionedUserId.indexOf(evt.d.author.id) === -1) {
     bot.sendMessage({
       to: channelID,
       message: evt.d.author.username + " поблагодарил(a) пользователя(ей) "
-      + arrMentionedUsers.join(', ') + " (Safiya's bot)"
-  });
-}else if(regexp.test(message) && evt.d.author.username == err){
-   bot.sendMessage({
+      + mentionedUserNames.join(', ') + " (Safiya's bot)"
+      
+  }); 
+}else{
+    bot.sendMessage({
       to: channelID,
-      message: "oops"
+      message: "Пардон, но всему свое время и место"
   });
 }
+console.log(message);
 });

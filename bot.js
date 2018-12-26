@@ -8,8 +8,8 @@ logger.remove(logger.transports.Console, {
 });
 logger.level = 'debug';
 
-//Channel
-var num_Channel = "525249065039036426";
+//Канал, в котором бот может реагировать на сообщения
+const ALLOWED_CHANNEL_ID = "525249065039036426";
 
 
 //Initialize Discord Bot
@@ -29,7 +29,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     var regexp = /\!thanks\b/gmi;
 
     //в каком канале пишут?
-    if(channelID !== num_Channel) {
+    if(channelID !== ALLOWED_CHANNEL_ID) {
         return;
     }
 
@@ -38,12 +38,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         return;
     }
 
-    //собираю ID упомянутых пользователей
+    //собираю ID упомянутых пользователей  в массив
     var mentionedUsersID = evt.d.mentions.map(function(item, i, mentions) {
         return evt.d.mentions[i].id;
     });  
     
-    //собираю имена упомянутых пользователей
+    //собираю имена упомянутых пользователей в массив
     var mentionedUsers = evt.d.mentions.map(function(item, i, mentions) {
         return evt.d.mentions[i].username;
     }); 

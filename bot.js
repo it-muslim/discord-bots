@@ -22,7 +22,7 @@ bot.on('ready',  function(evt) {
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-
+    
     var regexp = /\!thanks\b/gmi;
 
     var num_Channel = "525249065039036426";
@@ -38,5 +38,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             });
         }
     }
+    // console.log(evt);
 
 });
+

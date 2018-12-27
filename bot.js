@@ -29,19 +29,17 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     const authorId = evt.d.author.id;
     const authorName = evt.d.author.username;
 
+    // Conditions for exiting a function
     if(channelID !== allowed_channel ||
         authorId === bot_user_id || !regexp.test(message)){
         return;
     }
 
+    // Collecting usernames
+    let mentionedUserNames = evt.d.mentions.map(item => item.username);
 
-    let mentionedUserId = evt.d.mentions.map(function(item){
-        return item.id;
-    });
-
-    let mentionedUserNames = evt.d.mentions.map(function(item){
-        return item.username;
-    });
+    // Collecting user id
+    let mentionedUserId = evt.d.mentions.map(item => item.id);
 
     if (!!mentionedUserId.indexOf(authorId)) {
         bot.sendMessage({

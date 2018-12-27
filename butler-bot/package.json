@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Thanks bot for IT-Muslim Community",
     "main": "bot.js",
-    "author": "IT-Muslim Community",
+    "author": "IT-Muslim",
     "dependencies": {
         "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
         "winston": "^2.3.1"

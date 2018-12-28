@@ -23,7 +23,7 @@ bot.on('ready', function (evt) {
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-    const regexp = /\!thanks/gmi;
+    const regexp = /\!thanks\b/gmi;
     const bot_user_id = '523928478341660702';
     const allowed_channel = '525249065039036426';
     const authorId = evt.d.author.id;
@@ -40,6 +40,11 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
     // Collecting user id
     let mentionedUserId = evt.d.mentions.map(item => item.id);
+
+    // Exit function if no user is mentioned
+    if(mentionedUserId.length === 0){
+        return;
+    }
 
     if (!!mentionedUserId.indexOf(authorId)) {
         bot.sendMessage({

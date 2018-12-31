@@ -19,23 +19,23 @@ var bot = new Discord.Client({
 });
 
 bot.on('ready',  function(evt) {
-	logger.info('Connected');
-	logger.info('Logged in as: ');
-	logger.info(bot.username + ' - (' + bot.id + ')');
+  logger.info('Connected');
+  logger.info('Logged in as: ');
+  logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-	// в каком канале пишут?
-	if (channelID !== ALLOWED_CHANNEL_ID) {
-		return;
-	}
+  // в каком канале пишут?
+  if (channelID !== ALLOWED_CHANNEL_ID) {
+    return;
+  }
 
-	var regexp = /\!thanks\b/gmi;
+  var regexp = /\!thanks\b/gmi;
 
-	// содержит нужное слово?
-	if (!regexp.test(message)) {
-		return;
-	}
+  // содержит нужное слово?
+  if (!regexp.test(message)) {
+    return;
+  }
 
   // собираю ID упомянутых пользователей  в массив
   var mentionedUsersID = evt.d.mentions.map(function(item, i, mentions) {
@@ -57,14 +57,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
   // если упомянут автор сообщения, или  если упомянут пользователь
   if (mentionedUsersID.includes(authorID)){
     bot.sendMessage({
-			to: channelID, 
-			message:  "не благодари самого себя :face_palm:  (Aliya's bot)"
-		});
+      to: channelID, 
+      message:  "Не благодари самого себя :face_palm:  (Aliya's bot)"
+    });
   } else {
     bot.sendMessage({
-			to: channelID, 
-			message: user + " thanked in message  :slight_smile: " + mentionedUsers + " (Aliya's bot)"
-		});
+      to: channelID, 
+      message: user + " thanked in message  :slight_smile: " + mentionedUsers + " (Aliya's bot)"
+    });
   }
 });
 

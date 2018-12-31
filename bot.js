@@ -11,7 +11,6 @@ logger.level = 'debug';
 // Канал, в котором бот может реагировать на сообщения
 const ALLOWED_CHANNEL_ID = "525249065039036426";
 
-
 // Initialize Discord Bot
 var bot = new Discord.Client({
   token: auth.token,

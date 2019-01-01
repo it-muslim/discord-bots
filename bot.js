@@ -31,7 +31,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
   var regexp = /\!thanks\b/gmi;
 
-  // Содержит нужное слово?
+  // содержит нужное слово?
   if (!regexp.test(message)) {
     return;
   }

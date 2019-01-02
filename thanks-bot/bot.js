@@ -22,15 +22,14 @@ bot.on('ready', function (evt) {
   logger.info(bot.username + ' - (' + bot.id + ')')
 })
 
-const BOT_ID = '523928478341660702'
 const ALLOWED_CHANNEL_ID = '525249065039036426'
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-  const THANKS_MESSAGE_REGEXP = /\!thanks\b/gmi
+  let thanks_message_regexp = /!thanks\b/gmi
 
-  // Conditions for exiting the function
+  // Conditions for exiting the functionTHANKS_MESSAGE_REGEXP
   if (channelID !== ALLOWED_CHANNEL_ID ||
-    userID === BOT_ID || !THANKS_MESSAGE_REGEXP.test(message)) {
+    userID === bot.id || !thanks_message_regexp.test(message)) {
     return
   }
 
@@ -38,14 +37,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
   let mentionedUserNames = evt.d.mentions.map(item => item.username)
 
   // Collecting userIds
-  let mentionedUserId = evt.d.mentions.map(item => item.id)
+  let mentionedUserIds = evt.d.mentions.map(item => item.id)
 
   // Exit function if no user is mentioned
-  if (mentionedUserId.length === 0) {
+  if (mentionedUserIds.length === 0) {
     return
   }
 
-  if (!mentionedUserId.includes(userID)) {
+  if (!mentionedUserIds.includes(userID)) {
     bot.sendMessage({
       to: channelID,
       message: user + ' поблагодарил(a) пользователя(ей) ' +

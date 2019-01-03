@@ -25,35 +25,28 @@ bot.on('ready', function (evt) {
 const ALLOWED_CHANNEL_ID = '525249065039036426'
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-  let thanks_message_regexp = /!thanks\b/gmi
+  let thanksMessageRegexp = /!thanks\b/gmi
 
-  // Conditions for exiting the functionTHANKS_MESSAGE_REGEXP
+  // Conditions for exiting the function
   if (channelID !== ALLOWED_CHANNEL_ID ||
-    userID === bot.id || !thanks_message_regexp.test(message)) {
+    userID === bot.id || !thanksMessageRegexp.test(message)) {
     return
   }
 
-  // Collecting usernames
-  let mentionedUserNames = evt.d.mentions.map(item => item.username)
-
-  // Collecting userIds
-  let mentionedUserIds = evt.d.mentions.map(item => item.id)
+  // Filtering userIDs
+  let mentionedUserIDs = evt.d.mentions.filter(item => item.id !== userID)
 
   // Exit function if no user is mentioned
-  if (mentionedUserIds.length === 0) {
+  if (mentionedUserIDs.length === 0) {
     return
   }
 
-  if (!mentionedUserIds.includes(userID)) {
-    bot.sendMessage({
-      to: channelID,
-      message: user + ' поблагодарил(a) пользователя(ей) ' +
-      mentionedUserNames.join(', ') + ' (Safiya\'s bot)'
-    })
-  } else {
-    bot.sendMessage({
-      to: channelID,
-      message: 'Нельзя благодарить самого себя'
-    })
-  }
+  // Collecting mentionedUserNames
+  let mentionedUserNames = mentionedUserIDs.map(item => item.username)
+
+  bot.sendMessage({
+    to: channelID,
+    message: `${user} поблагодарил(a) пользователя(ей) ` +
+    mentionedUserNames.join(', ')
+  })
 })

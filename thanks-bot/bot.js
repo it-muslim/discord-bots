@@ -1,6 +1,6 @@
 var Discord = require('discord.io')
 var logger = require('winston')
-var auth = require('./auth.json')
+var auth = require('../auth.json')
 
 // Configure logger settings
 logger.remove(logger.transports.Console, {
@@ -36,12 +36,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
   }
 
   // собираю ID упомянутых пользователей  в массив
-  var mentionedUsersID = evt.d.mentions.map(function (i) {
+  var mentionedUsersID = evt.d.mentions.map(function (item, i, mentions) {
     return evt.d.mentions[i].id
   })
 
   // собираю имена упомянутых пользователей в массив
-  var mentionedUsers = evt.d.mentions.map(function (i) {
+  var mentionedUsers = evt.d.mentions.map(function (item, i, mentions) {
     return evt.d.mentions[i].username
   })
 

@@ -1,6 +1,2 @@
-#folders
-butler-bot/
 node_modules/
-
-#files
 auth.json

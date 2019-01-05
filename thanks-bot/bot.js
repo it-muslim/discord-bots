@@ -35,14 +35,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     return
   }
 
-  // собираю ID упомянутых пользователей  в массив
-  var mentionedUsersID = evt.d.mentions.map(function (item, i, mentions) {
-    return evt.d.mentions[i].id
-  })
-
   // собираю имена упомянутых пользователей в массив
   var mentionedUsers = evt.d.mentions.map(function (item, i, mentions) {
     return evt.d.mentions[i].username
+  })
+
+  // собираю ID упомянутых пользователей  в массив
+  var mentionedUserIDs = evt.d.mentions.map(function (item, i, mentions) {
+    return evt.d.mentions[i].id
   })
 
   // если никто не упомянут в сообщении, то бот не должен отвечать
@@ -50,10 +50,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     return
   }
 
-  var authorID = evt.d.author.id
-
   // если упомянут автор сообщения, или  если упомянут пользователь
-  if (mentionedUsersID.includes(authorID)) {
+  if (mentionedUserIDs.includes(userID)) {
     bot.sendMessage({
       to: channelID,
       message: "Не благодари самого себя :face_palm:  (Aliya's bot)" })

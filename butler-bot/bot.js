@@ -31,7 +31,7 @@ client.on('message', msg => {
   console.log(timeNow)
   let timeMemberJoin = msg.member.joinedAt
   console.log(timeMemberJoin)
-  let timeDifference = new Date(timeNow).getDate() - new Date(timeMemberJoin).getDate()
+  let timeDifference = (new Date(timeNow).getTime() - new Date(timeMemberJoin).getTime()) / 1000 / 60 / 60 / 24
   console.log(timeDifference)
   if (timeDifference > 7) {
     greetingsChannel.send(

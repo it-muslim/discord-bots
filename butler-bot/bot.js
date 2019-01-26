@@ -20,10 +20,10 @@ logger.level = 'debug'
 // Initialize Discord Bot
 const client = new Discord.Client()
 
-client.on('ready', () => {
+client.once('ready', () => {
   logger.info('Connected')
   logger.info('Logged in as: ')
-  logger.info(client.username + ' - (' + client.id + ')')
+  logger.info(`${client.user.username} - (${client.user.id})`)
 })
 
 client.on('guildMemberAdd', (member) => {

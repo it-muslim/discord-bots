@@ -2,6 +2,19 @@ const Discord = require('discord.js')
 const logger = require('winston')
 const auth = require('./auth.json')
 
+// Roles
+const DESCRIBE_YOURSELF_ROLE_ID = '450966946519711744'
+const FULL_MEMBER_ROLE_ID = '450967258722992129'
+
+// Channels
+const INFO_CHANNEL_ID = '441122385031200794'
+
+/* const GREETINGS_CHANNEL_ID = '444812676632412161' */
+const GREETINGS_CHANNEL_ID = '525249065039036426'// Не забыть поменять айди
+
+// Servers
+const IT_MUSLIM_SERVER_ID = '441120673109245982'
+
 // Configure logger settings
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
@@ -18,28 +31,83 @@ client.on('ready', () => {
   logger.info(client.username + ' - (' + client.id + ')')
 })
 
-const GREETINGS_CHANNEL_ID = '525249065039036426'
+client.on('guildMemberAdd', (member) => {
+  member.addRole(DESCRIBE_YOURSELF_ROLE_ID)
+    .then(() => { logger.info('Successfully added the role') })
 
-client.on('message', msg => {
-  if (msg.channel.id !== GREETINGS_CHANNEL_ID || msg.author.bot) {
+  let greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID)
+  if (typeof greetingsChannel === 'undefined') {
+    logger.error('Greetings channel is not defined')
     return
   }
 
-  let greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID)
-
-  let timeNow = new Date()
-  console.log(timeNow)
-  let timeMemberJoin = msg.member.joinedAt
-  console.log(timeMemberJoin)
-  let timeDifference = (new Date(timeNow).getTime() - new Date(timeMemberJoin).getTime()) / 1000 / 60 / 60 / 24
-  console.log(timeDifference)
-  if (timeDifference > 7) {
-    greetingsChannel.send(
-      `Вы скоро будете удалены из сообщества`)
-  } else {
-    greetingsChannel.send(
-      `Не забываем рассказать о себе`)
+  let infoChannel = client.channels.get(INFO_CHANNEL_ID)
+  if (typeof infoChannel === 'undefined') {
+    logger.error('Info channel is not defined')
+    return
   }
+
+  greetingsChannel.send(
+    `Ассаляму алейкум ва рахматуллахи ва баракатуху, ${member.toString()}!\n\n` +
+    `Добро пожаловать на IT-Muslim Дискорд сервер!\n` +
+    `Чтобы узнать побольше о сообществе, посетите канал ${infoChannel.toString()}. ` +
+    `Чтобы получить разрешение писать во всех каналах и активно yчаствовать ` +
+    `в жизни сообщества, напишите прямо сюда (${greetingsChannel.toString()}) ` +
+    `немного о себе.`
+  )
 })
+
+client.on('message', message => {
+  if (message.channel.id !== GREETINGS_CHANNEL_ID || message.author.bot) {
+    return
+  }
+
+  message.member.removeRole(DESCRIBE_YOURSELF_ROLE_ID)
+    .then(() => { logger.info('Successfully removed the role') })
+  message.member.addRole(FULL_MEMBER_ROLE_ID)
+    .then(() => { logger.info('Successfully added the role') })
+})
+
+client.setInterval((servers) => {
+  const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
+
+  const incompleteMembers = itMuslimServer.members.filter((member) => {
+    return !member.roles.has(FULL_MEMBER_ROLE_ID)
+  })
+  /* console.log(incompleteMembers) */
+
+  const incompleteMembersName = incompleteMembers.map((item) => {
+    return item.user.username
+  })
+  /* console.log(incompleteMembersName) */
+
+  const membersJoinTime = incompleteMembers.map((member) => {
+    return member.joinedTimestamp
+  })
+  /* console.log(membersJoinTime) */
+
+  /* const greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID) */
+
+  membersJoinTime.forEach((item) => {
+    let timeNow = new Date()
+    let timeDifference = (timeNow.getTime() - item) / 1000 / 60 / 60 / 24
+
+    for (let i = 0; i < incompleteMembersName.length; i++) {
+      if (timeDifference > 7) {
+        let memberName = []
+        memberName.push(incompleteMembersName[i])
+        console.log(timeDifference)
+        console.log(memberName)
+        return
+      }
+    }
+    /* if (timeDifference > 7) {
+         greetingsChannel.send(
+         `Вы скоро ${item} будете удалены из сообщества`
+        )} */
+  })
+},
+5000,
+client.guilds)
 
 client.login(auth.token)

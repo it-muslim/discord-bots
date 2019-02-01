@@ -1,65 +1,57 @@
-var Discord = require('discord.io')
-var logger = require('winston')
-var auth = require('../auth.json')
+const Discord = require('discord.js')
+const logger = require('winston')
+const auth = require('../auth.json')
 
 // Configure logger settings
-logger.remove(logger.transports.Console, {
+logger.remove(logger.transports.Console)
+logger.add(logger.transports.Console, {
   colorize: true
 })
 logger.level = 'debug'
 
-// Канал, в котором бот может реагировать на сообщения
-const ALLOWED_CHANNEL_ID = '525249065039036426'
-
 // Initialize Discord Bot
-var bot = new Discord.Client({
-  token: auth.token,
-  autorun: true
-})
+const bot = new Discord.Client()
 
 bot.on('ready', function (evt) {
   logger.info('Connected')
-  logger.info('Logged in as: ')
-  logger.info(bot.username + ' - (' + bot.id + ')')
 })
 
-bot.on('message', function (user, userID, channelID, message, evt) {
-  // в каком канале пишут?
-  if (channelID !== ALLOWED_CHANNEL_ID) {
+const ALLOWED_CHANNEL_ID = '525249065039036426'
+
+bot.on('message', message => {
+  let thanksMessageRegexp = /!thanks\b/gmi
+
+  // Conditions for exiting the function
+  if (message.channel.id !== ALLOWED_CHANNEL_ID ||
+    message.content !== thanksMessageRegexp) {
     return
   }
 
-  // содержит нужное слово?
-  var regexp = /!thanks\b/gmi
-  if (!regexp.test(message)) {
+  // mentioned Users
+  let mentionedUsers = message.mentions.users
+
+  // Filtering mentionedUserIDs
+  let mentionedUserIDs = mentionedUsers.map(item => item.id)
+
+  // Collecting mentionedUsernames
+  let mentionedUsernames = mentionedUsers.map(item => item.username)
+
+  // Exit function if no user is mentioned
+  if (mentionedUserIDs.length === 0) {
     return
   }
 
-  // собираю имена упомянутых пользователей в массив
-  var mentionedUsers = evt.d.mentions.map(function (item, i, mentions) {
-    return evt.d.mentions[i].username
-  })
+  // если упомянул самого себя
+  // if (key === message.author.id) {
+  //   message.channel.send("Не благодари самого себя :face_palm:")
+  // }
 
-  // собираю ID упомянутых пользователей  в массив
-  var mentionedUserIDs = evt.d.mentions.map(function (item, i, mentions) {
-    return evt.d.mentions[i].id
-  })
-
-  // если никто не упомянут в сообщении, то бот не должен отвечать
-  if (mentionedUsers.length === 0) {
-    return
-  }
-
-  // если упомянут автор сообщения, или  если упомянут пользователь
-  if (mentionedUserIDs.includes(userID)) {
-    bot.sendMessage({
-      to: channelID,
-      message: "Не благодари самого себя :face_palm:  (Aliya's bot)" })
-  } else {
-    bot.sendMessage({
-      to: channelID,
-      message: user + ' thanked in message  :slight_smile: ' +
-      mentionedUsers + " (Aliya's bot)"
-    })
+  // если кто-то упомянут
+  if (mentionedUsernames) {
+    message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
+      ${mentionedUsernames.join(', ')}`
+    )
   }
 })
+
+bot.login(auth.token)

@@ -1,6 +1,7 @@
-const Discord = require('discord.io')
+
+const Discord = require('discord.js')
 const logger = require('winston')
-const auth = require('./auth.json')
+const auth = require('../auth.json')
 
 // Configure logger settings
 logger.remove(logger.transports.Console)
@@ -11,42 +12,46 @@ logger.add(logger.transports.Console, {
 logger.level = 'debug'
 
 // Initialize Discord Bot
-const bot = new Discord.Client({
-  token: auth.token,
-  autorun: true
-})
+const client = new Discord.Client()
 
-bot.on('ready', function (evt) {
+client.on('ready', () => {
   logger.info('Connected')
   logger.info('Logged in as: ')
-  logger.info(bot.username + ' - (' + bot.id + ')')
+  logger.info(`${client.user.username} - (${client.user.id})`)
 })
 
 const ALLOWED_CHANNEL_ID = '525249065039036426'
 
-bot.on('message', function (user, userID, channelID, message, evt) {
-  let thanksMessageRegexp = /!thanks\b/gmi
+client.on('message', message => {
+  const thanksMessageRegexp = /!thanks\b/gmi
 
   // Conditions for exiting the function
-  if (channelID !== ALLOWED_CHANNEL_ID ||
-    userID === bot.id || !thanksMessageRegexp.test(message)) {
+  if (message.channel.id !== ALLOWED_CHANNEL_ID ||
+    message.author.id === client.user.id ||
+    message.content !== thanksMessageRegexp.test(message)) {
     return
   }
 
-  // Filtering userIDs
-  let mentionedUserIDs = evt.d.mentions.filter(item => item.id !== userID)
+  // mentioned Users
+  let mentionedUsers = message.mentions.users
+
+  // Filtering mentionedUserIDs
+  let mentionedUserIDs = mentionedUsers.map(item => item.id)
+
+  // Collecting mentionedUsernames
+  let mentionedUsernames = mentionedUsers.map(item => item.username)
 
   // Exit function if no user is mentioned
   if (mentionedUserIDs.length === 0) {
     return
   }
 
-  // Collecting mentionedUserNames
-  let mentionedUserNames = mentionedUserIDs.map(item => item.username)
-
-  bot.sendMessage({
-    to: channelID,
-    message: `${user} поблагодарил(a) пользователя(ей) ` +
-    mentionedUserNames.join(', ')
-  })
+  // если кто-то упомянут
+  if (mentionedUsernames) {
+    message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
+      ${mentionedUsernames.join(', ')}`
+    )
+  }
 })
+
+client.login(auth.token)

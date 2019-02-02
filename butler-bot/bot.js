@@ -68,11 +68,7 @@ client.on('message', (message) => {
     .then(() => { logger.info('Successfully added the role') })
 })
 
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-=======
 // Kick the user who didn't tell about himself in two weeks
->>>>>>> Stashed changes
 client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 

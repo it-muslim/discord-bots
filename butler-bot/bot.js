@@ -68,47 +68,44 @@ client.on('message', (message) => {
     .then(() => { logger.info('Successfully added the role') })
 })
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+// Kick the user who didn't tell about himself in two weeks
+>>>>>>> Stashed changes
 client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 
-  const incompleteMembers = itMuslimServer.members.filter((member) => {
+  const restrictedMembers = itMuslimServer.members.filter((member) => {
     return !member.roles.has(FULL_MEMBER_ROLE_ID)
   })
-  /* console.log(incompleteMembers) */
 
-  const incompleteMembersName = incompleteMembers.map((item) => {
-    return item.user.username
-  })
-  /* console.log(incompleteMembersName) */
+  // Bots
+  const THANKS_BOT_ID = '523928478341660702'
+  const BUTLER_BOT_ID = '525943966705909776'
+  const TEST_BOT_ID = '534138407069155340'
 
-  const membersJoinTime = incompleteMembers.map((member) => {
-    return member.joinedTimestamp
-  })
-  /* console.log(membersJoinTime) */
+  // Today's date
+  let now = new Date()
 
-  /* const greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID) */
+  // Milliseconds in day
+  const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24
 
-  membersJoinTime.forEach((item) => {
-    let timeNow = new Date()
-    let timeDifference = (timeNow.getTime() - item) / 1000 / 60 / 60 / 24
-
-    for (let i = 0; i < incompleteMembersName.length; i++) {
-      if (timeDifference > 7) {
-        let memberName = []
-        memberName.push(incompleteMembersName[i])
-        console.log(timeDifference)
-        console.log(memberName)
-        return
-      }
+  restrictedMembers.forEach((member) => {
+    if (member.id === THANKS_BOT_ID || member.id === BUTLER_BOT_ID ||
+    member.id === TEST_BOT_ID) {
+      return
     }
-    /* if (timeDifference > 7) {
-         greetingsChannel.send(
-         `Вы скоро ${item} будете удалены из сообщества`
-        )} */
+
+    // Сalculation of the time interval in which the user was inactive
+    let daysInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_DAY
+
+    if (daysInactive > 2) {
+      member.kick()
+    }
   })
 },
-5000,
+1000 * 60 * 60,
 client.guilds)
 
 // Handle errors

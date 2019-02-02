@@ -1,57 +1,52 @@
-const Discord = require('discord.js')
+const Discord = require('discord.io')
 const logger = require('winston')
-const auth = require('../auth.json')
+const auth = require('./auth.json')
 
 // Configure logger settings
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
   colorize: true
 })
+
 logger.level = 'debug'
 
 // Initialize Discord Bot
-const bot = new Discord.Client()
+const bot = new Discord.Client({
+  token: auth.token,
+  autorun: true
+})
 
 bot.on('ready', function (evt) {
   logger.info('Connected')
+  logger.info('Logged in as: ')
+  logger.info(bot.username + ' - (' + bot.id + ')')
 })
 
 const ALLOWED_CHANNEL_ID = '525249065039036426'
 
-bot.on('message', message => {
+bot.on('message', function (user, userID, channelID, message, evt) {
   let thanksMessageRegexp = /!thanks\b/gmi
 
   // Conditions for exiting the function
-  if (message.channel.id !== ALLOWED_CHANNEL_ID ||
-    message.content !== thanksMessageRegexp) {
+  if (channelID !== ALLOWED_CHANNEL_ID ||
+    userID === bot.id || !thanksMessageRegexp.test(message)) {
     return
   }
 
-  // mentioned Users
-  let mentionedUsers = message.mentions.users
-
-  // Filtering mentionedUserIDs
-  let mentionedUserIDs = mentionedUsers.map(item => item.id)
-
-  // Collecting mentionedUsernames
-  let mentionedUsernames = mentionedUsers.map(item => item.username)
+  // Filtering userIDs
+  let mentionedUserIDs = evt.d.mentions.filter(item => item.id !== userID)
 
   // Exit function if no user is mentioned
   if (mentionedUserIDs.length === 0) {
     return
   }
 
-  // если упомянул самого себя
-  // if (key === message.author.id) {
-  //   message.channel.send("Не благодари самого себя :face_palm:")
-  // }
+  // Collecting mentionedUserNames
+  let mentionedUserNames = mentionedUserIDs.map(item => item.username)
 
-  // если кто-то упомянут
-  if (mentionedUsernames) {
-    message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
-      ${mentionedUsernames.join(', ')}`
-    )
-  }
+  bot.sendMessage({
+    to: channelID,
+    message: `${user} поблагодарил(a) пользователя(ей) ` +
+    mentionedUserNames.join(', ')
+  })
 })
-
-bot.login(auth.token)

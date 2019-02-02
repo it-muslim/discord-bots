@@ -20,10 +20,10 @@ logger.level = 'debug'
 // Initialize Discord Bot
 const client = new Discord.Client()
 
-client.on('ready', () => {
+client.once('ready', () => {
   logger.info('Connected')
   logger.info('Logged in as: ')
-  logger.info(client.username + ' - (' + client.id + ')')
+  logger.info(`${client.user.username} - (${client.user.id})`)
 })
 
 client.on('guildMemberAdd', (member) => {
@@ -52,7 +52,7 @@ client.on('guildMemberAdd', (member) => {
   )
 })
 
-client.on('message', message => {
+client.on('message', (message) => {
   if (message.channel.id !== GREETINGS_CHANNEL_ID || message.author.bot) {
     return
   }
@@ -61,6 +61,11 @@ client.on('message', message => {
     .then(() => { logger.info('Successfully removed the role') })
   message.member.addRole(FULL_MEMBER_ROLE_ID)
     .then(() => { logger.info('Successfully added the role') })
+})
+
+// Handle errors
+client.on('error', (errorEvent) => {
+  logger.error(errorEvent.message)
 })
 
 client.login(auth.token)

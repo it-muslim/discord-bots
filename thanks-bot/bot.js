@@ -33,9 +33,6 @@ client.on('message', message => {
 
   let mentionedUsers = message.mentions.users
 
-  // Filtering mentionedUserIDs
-  // let mentionedUserIDs = mentionedUsers.filter(item => item.id !== message.author)
-
   // Collecting mentionedUsernames
   let mentionedUsernames = mentionedUsers.map(item => item.username)
 
@@ -44,12 +41,9 @@ client.on('message', message => {
     return
   }
 
-  // если кто-то упомянут
-  if (mentionedUsernames) {
-    message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
-      ${mentionedUsernames.join(', ')}`
-    )
-  }
+  message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
+    ${mentionedUsernames.join(', ')}`
+  )
 })
 
 client.login(auth.token)

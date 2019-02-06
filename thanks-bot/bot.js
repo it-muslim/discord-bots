@@ -31,19 +31,13 @@ client.on('message', message => {
     return
   }
 
-  let mentionedUsers = message.mentions.users
-
-  // Collecting mentionedUsernames
-  let mentionedUsernames = mentionedUsers.map(item => item.username)
-
-  // Exit function if no user is mentioned
-  if (mentionedUsernames.length === 0) {
-    return
+  let mentionedUsers = message.mentions.users.filter(user => user.id !== message.member.id)
+  if (mentionedUsers.length > 0) {
+    let mentionedUsernames = mentionedUsers.map(item => item.username)
+    message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
+      ${mentionedUsernames.join(', ')}`
+    )
   }
-
-  message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
-    ${mentionedUsernames.join(', ')}`
-  )
 })
 
 client.login(auth.token)

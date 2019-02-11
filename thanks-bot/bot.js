@@ -1,4 +1,4 @@
-const Discord = require('discord.io')
+const Discord = require('discord.js')
 const logger = require('winston')
 const auth = require('./auth.json')
 
@@ -11,42 +11,33 @@ logger.add(logger.transports.Console, {
 logger.level = 'debug'
 
 // Initialize Discord Bot
-const bot = new Discord.Client({
-  token: auth.token,
-  autorun: true
-})
+const client = new Discord.Client()
 
-bot.on('ready', function (evt) {
+client.on('ready', () => {
   logger.info('Connected')
   logger.info('Logged in as: ')
-  logger.info(bot.username + ' - (' + bot.id + ')')
+  logger.info(`${client.user.username} - (${client.user.id})`)
 })
 
 const ALLOWED_CHANNEL_ID = '525249065039036426'
 
-bot.on('message', function (user, userID, channelID, message, evt) {
-  let thanksMessageRegexp = /!thanks\b/gmi
+client.on('message', message => {
+  const thanksMessageRegexp = /!thanks\b/gmi
 
-  // Conditions for exiting the function
-  if (channelID !== ALLOWED_CHANNEL_ID ||
-    userID === bot.id || !thanksMessageRegexp.test(message)) {
+  // Ignoring the following cases
+  if (message.channel.id !== ALLOWED_CHANNEL_ID ||
+    message.author.id === client.user.id ||
+    !thanksMessageRegexp.test(message)) {
     return
   }
 
-  // Filtering userIDs
-  let mentionedUserIDs = evt.d.mentions.filter(item => item.id !== userID)
-
-  // Exit function if no user is mentioned
-  if (mentionedUserIDs.length === 0) {
-    return
+  let mentionedUsers = message.mentions.users.filter(user => user.id !== message.member.id)
+  if (mentionedUsers.length > 0) {
+    let mentionedUsernames = mentionedUsers.map(item => item.username)
+    message.channel.send(`${message.author.username} поблагодарил(a) пользователя(ей):
+      ${mentionedUsernames.join(', ')}`
+    )
   }
-
-  // Collecting mentionedUserNames
-  let mentionedUserNames = mentionedUserIDs.map(item => item.username)
-
-  bot.sendMessage({
-    to: channelID,
-    message: `${user} поблагодарил(a) пользователя(ей) ` +
-    mentionedUserNames.join(', ')
-  })
 })
+
+client.login(auth.token)

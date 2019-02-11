@@ -15,6 +15,11 @@ const GREETINGS_CHANNEL_ID = '525249065039036426'// Не забыть помен
 // Servers
 const IT_MUSLIM_SERVER_ID = '441120673109245982'
 
+// Milliseconds in day
+const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24
+
+// Milliseconds in hour
+const MILLISECONDS_IN_HOUR = 5000
 // Configure logger settings
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
@@ -68,40 +73,36 @@ client.on('message', (message) => {
     .then(() => { logger.info('Successfully added the role') })
 })
 
-// Kick the user who didn't tell about himself in two weeks
-client.setInterval((servers) => {
+// Kick users who haven't introduced themselves within two weeks
+let intervalid = client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 
   const restrictedMembers = itMuslimServer.members.filter((member) => {
     return !member.roles.has(FULL_MEMBER_ROLE_ID)
   })
 
-  // Bots
-  const THANKS_BOT_ID = '523928478341660702'
-  const BUTLER_BOT_ID = '525943966705909776'
-  const TEST_BOT_ID = '534138407069155340'
-
   // Today's date
   let now = new Date()
 
-  // Milliseconds in day
-  const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24
-
   restrictedMembers.forEach((member) => {
-    if (member.id === THANKS_BOT_ID || member.id === BUTLER_BOT_ID ||
-    member.id === TEST_BOT_ID) {
+    if (member.user.bot) {
       return
     }
 
     // Сalculation of the time interval in which the user was inactive
     let daysInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_DAY
+    if (daysInactive > 2 && daysInactive < 10) {
+      /* member.kick() */
+      console.log(member.user.username)
+    }
 
-    if (daysInactive > 2) {
-      member.kick()
+    if (daysInactive >= 10) {
+      console.log(`OOPs ${member.user.username}`)
+      clearInterval(intervalid)
     }
   })
 },
-1000 * 60 * 60,
+MILLISECONDS_IN_HOUR,
 client.guilds)
 
 // Handle errors

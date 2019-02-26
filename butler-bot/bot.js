@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const logger = require('winston')
-const auth = require('../auth.json')
+const auth = require('./auth.json')
 
 // Roles
 const DESCRIBE_YOURSELF_ROLE_ID = '450966946519711744'
@@ -30,6 +30,10 @@ client.on('guildMemberAdd', (member) => {
   member.addRole(DESCRIBE_YOURSELF_ROLE_ID)
     .then(() => { logger.info('Successfully added the role') })
 
+  if (member.user.bot) {
+    return
+  }
+
   let greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID)
   if (typeof greetingsChannel === 'undefined') {
     logger.error('Greetings channel is not defined')
@@ -39,10 +43,6 @@ client.on('guildMemberAdd', (member) => {
   let infoChannel = client.channels.get(INFO_CHANNEL_ID)
   if (typeof infoChannel === 'undefined') {
     logger.error('Info channel is not defined')
-    return
-  }
-
-  if (member.user.bot) {
     return
   }
 

@@ -27,10 +27,12 @@ client.once('ready', () => {
 })
 
 client.on('guildMemberAdd', (member) => {
-  if (!member.user.bot) {
-    member.addRole(DESCRIBE_YOURSELF_ROLE_ID)
-      .then(() => { logger.info('Successfully added the role') })
+  if (member.user.bot) {
+    return
   }
+
+  member.addRole(DESCRIBE_YOURSELF_ROLE_ID)
+    .then(() => { logger.info('Successfully added the role') })
 
   let greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID)
   if (typeof greetingsChannel === 'undefined') {

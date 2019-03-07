@@ -65,6 +65,11 @@ client.on('message', (message) => {
     .then(() => { logger.info('Successfully removed the role') })
   message.member.addRole(FULL_MEMBER_ROLE_ID)
     .then(() => { logger.info('Successfully added the role') })
+
+  // let messageIDBots = client.user.lastMessageID;
+  if (message.author.lastMessage) {
+    console.log('есть сообщение')
+  }
 })
 
 // Handle errors

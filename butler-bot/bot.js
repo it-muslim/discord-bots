@@ -17,6 +17,7 @@ const IT_MUSLIM_SERVER_ID = '441120673109245982'
 
 // Milliseconds in day
 const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24
+const HOURS_IN_DAY = 24
 
 // Milliseconds in hour
 const MILLISECONDS_IN_HOUR = 5000
@@ -78,7 +79,7 @@ client.on('message', (message) => {
 })
 
 // Kick users who haven't introduced themselves within two weeks
-let intervalid = client.setInterval((servers) => {
+client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 
   const restrictedMembers = itMuslimServer.members.filter((member) => {
@@ -95,14 +96,22 @@ let intervalid = client.setInterval((servers) => {
 
     // Сalculation of the time interval in which the user was inactive
     let daysInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_DAY
-    if (daysInactive > 2 && daysInactive < 10) {
-      /* member.kick() */
-      console.log(member.user.username)
+    if (daysInactive > 14) {
+      member.kick()
+        .then(() => console.log(`Kicked ${member.displayName}`))
+        .catch(console.error)
     }
 
-    if (daysInactive >= 10) {
-      console.log(`OOPs ${member.user.username}`)
-      clearInterval(intervalid)
+    // Сalculation of the hours in which the user was inactive
+    let hoursInactive = Math.floor((now.getTime() - member.joinedTimestamp) / 3600000)
+    if (hoursInactive >= 7 * HOURS_IN_DAY && hoursInactive < (7 * HOURS_IN_DAY + 1)) {
+      let greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID)
+      greetingsChannel.send(
+        `Ассаляму алейкум ва рахматуллахи ва баракатуху, ${member.toString()}!\n\n` +
+        `Напишите
+         прямо сюда (${greetingsChannel.toString()}) ` +
+        `немного о себе, иначе скоро вы будете удалены из сообщества!`
+      )
     }
   })
 },

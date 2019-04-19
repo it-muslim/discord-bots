@@ -20,7 +20,7 @@ const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24
 const HOURS_IN_DAY = 24
 
 // Milliseconds in hour
-const MILLISECONDS_IN_HOUR = 5000
+const MILLISECONDS_IN_HOUR = 3600000
 // Configure logger settings
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
@@ -83,16 +83,15 @@ client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 
   const restrictedMembers = itMuslimServer.members.filter((member) => {
-    return !member.roles.has(FULL_MEMBER_ROLE_ID)
+    if (!member.roles.has(FULL_MEMBER_ROLE_ID) || member.user.bot) {
+      return
+    }
   })
 
   // Today's date
   let now = new Date()
 
   restrictedMembers.forEach((member) => {
-    if (member.user.bot) {
-      return
-    }
 
     // Сalculation of the time interval in which the user was inactive
     let daysInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_DAY
@@ -103,13 +102,12 @@ client.setInterval((servers) => {
     }
 
     // Сalculation of the hours in which the user was inactive
-    let hoursInactive = Math.floor((now.getTime() - member.joinedTimestamp) / 3600000)
+    let hoursInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_HOUR
     if (hoursInactive >= 7 * HOURS_IN_DAY && hoursInactive < (7 * HOURS_IN_DAY + 1)) {
       let greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID)
       greetingsChannel.send(
         `Ассаляму алейкум ва рахматуллахи ва баракатуху, ${member.toString()}!\n\n` +
-        `Напишите
-         прямо сюда (${greetingsChannel.toString()}) ` +
+        `Напишите прямо сюда (${greetingsChannel.toString()}) ` +
         `немного о себе, иначе скоро вы будете удалены из сообщества!`
       )
     }

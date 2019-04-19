@@ -83,16 +83,13 @@ client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 
   const restrictedMembers = itMuslimServer.members.filter((member) => {
-    if (!member.roles.has(FULL_MEMBER_ROLE_ID) || member.user.bot) {
-      return
-    }
+    return !member.roles.has(FULL_MEMBER_ROLE_ID) || member.user.bot
   })
 
   // Today's date
   let now = new Date()
 
   restrictedMembers.forEach((member) => {
-
     // Сalculation of the time interval in which the user was inactive
     let daysInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_DAY
     if (daysInactive > 14) {

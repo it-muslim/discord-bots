@@ -8,19 +8,16 @@ const FULL_MEMBER_ROLE_ID = '450967258722992129'
 
 // Channels
 const INFO_CHANNEL_ID = '441122385031200794'
-
-/* const GREETINGS_CHANNEL_ID = '444812676632412161' */
-const GREETINGS_CHANNEL_ID = '525249065039036426'// Не забыть поменять айди
+const GREETINGS_CHANNEL_ID = '444812676632412161'
 
 // Servers
 const IT_MUSLIM_SERVER_ID = '441120673109245982'
 
-// Milliseconds in day
-const MILLISECONDS_IN_DAY = 86400000
+// Time constants
 const HOURS_IN_DAY = 24
+const MILLISECONDS_IN_HOUR = 60 * 60 * 1000
+const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
-// Milliseconds in hour
-const MILLISECONDS_IN_HOUR = 3600000
 // Configure logger settings
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
@@ -35,6 +32,11 @@ client.once('ready', () => {
   logger.info('Connected')
   logger.info('Logged in as: ')
   logger.info(`${client.user.username} - (${client.user.id})`)
+})
+
+// Handle errors
+client.on('error', (errorEvent) => {
+  logger.error(errorEvent.message)
 })
 
 client.on('guildMemberAdd', (member) => {
@@ -83,23 +85,23 @@ client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 
   const restrictedMembers = itMuslimServer.members.filter((member) => {
-    return !member.roles.has(FULL_MEMBER_ROLE_ID) || !member.user.bot
+    return !member.roles.has(FULL_MEMBER_ROLE_ID) && !member.user.bot
   })
 
-  // Today's date
-  let now = new Date()
+  const now = new Date().getTime()
 
   restrictedMembers.forEach((member) => {
     // Сalculation of the time interval in which the user was inactive
-    let daysInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_DAY
+    let daysInactive = (now - member.joinedTimestamp) / MILLISECONDS_IN_DAY
     if (daysInactive > 14) {
+      logger.info(`Kicking ${member.displayName}`)
       member.kick()
-        .then(() => console.log(`Kicked ${member.displayName}`))
-        .catch(console.error)
+        .then(() => logger.info(`Successfully kicked ${member.displayName}`))
+        .catch(logger.error)
     }
 
     // Сalculation of the hours in which the user was inactive
-    let hoursInactive = (now.getTime() - member.joinedTimestamp) / MILLISECONDS_IN_HOUR
+    let hoursInactive = (now - member.joinedTimestamp) / MILLISECONDS_IN_HOUR
     if (hoursInactive >= 7 * HOURS_IN_DAY && hoursInactive < (7 * HOURS_IN_DAY + 1)) {
       let greetingsChannel = client.channels.get(GREETINGS_CHANNEL_ID)
       greetingsChannel.send(
@@ -112,10 +114,5 @@ client.setInterval((servers) => {
 },
 MILLISECONDS_IN_HOUR,
 client.guilds)
-
-// Handle errors
-client.on('error', (errorEvent) => {
-  logger.error(errorEvent.message)
-})
 
 client.login(auth.token)

@@ -16,7 +16,7 @@ const GREETINGS_CHANNEL_ID = '525249065039036426'// Не забыть помен
 const IT_MUSLIM_SERVER_ID = '441120673109245982'
 
 // Milliseconds in day
-const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24
+const MILLISECONDS_IN_DAY = 86400000
 const HOURS_IN_DAY = 24
 
 // Milliseconds in hour
@@ -83,7 +83,7 @@ client.setInterval((servers) => {
   const itMuslimServer = servers.get(IT_MUSLIM_SERVER_ID)
 
   const restrictedMembers = itMuslimServer.members.filter((member) => {
-    return !member.roles.has(FULL_MEMBER_ROLE_ID) || member.user.bot
+    return !member.roles.has(FULL_MEMBER_ROLE_ID) || !member.user.bot
   })
 
   // Today's date
